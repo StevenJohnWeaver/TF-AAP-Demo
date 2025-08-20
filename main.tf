@@ -94,9 +94,9 @@ resource "aap_host" "new_host" {
   inventory_id = aap_inventory.dynamic_inventory.id
   name         = aws_instance.web_server.public_ip
   description  = "Host provisioned by Terraform"
-  variables = {
+  variables    = jsonencode({
     ansible_user = "ubuntu"
-  }
+  })
 }
 
 # Launch the Job Template to configure the web server
