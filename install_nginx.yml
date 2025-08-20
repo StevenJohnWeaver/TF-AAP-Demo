@@ -1,0 +1,17 @@
+---
+- name: Install and configure Nginx web server
+  hosts: all  # This will be overridden by the AAP inventory
+  become: yes # Use privilege escalation (sudo) to run the tasks
+
+  tasks:
+    - name: Ensure Nginx is installed
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+      
+    - name: Ensure Nginx service is running and enabled
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
