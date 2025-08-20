@@ -96,7 +96,6 @@ resource "aap_host" "new_host" {
   description  = "Host provisioned by Terraform"
   variables = {
     ansible_user = "ubuntu"
-    ansible_ssh_private_key_file = "/path/to/your/ssh/private_key.pem"
   }
 }
 
