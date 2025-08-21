@@ -107,12 +107,23 @@ resource "aap_host" "new_host" {
   })
 }
 
-# Launch the Job Template to configure the web server
+# Wait for the EC2 instance to be ready before proceeding
+resource "null_resource" "wait_for_instance" {
+  # This resource will wait until the EC2 instance is created
+  depends_on = [aws_instance.web_server]
+
+  # The provisioner will run a simple shell command that waits for port 22 to be available.
+  provisioner "local-exec" {
+    command = "until curl --fail -s -o /dev/null ${aws_instance.web_server.public_ip}:22; do sleep 5; done"
+  }
+}
+
+# The AAP job now depends on the null_resource, which will only complete
+# after the EC2 instance is ready for SSH connections.
 resource "aap_job" "run_webserver_playbook" {
   job_template_id = var.aap_job_template_id
   inventory_id    = aap_inventory.dynamic_inventory.id
-  # Wait for the EC2 instance to be ready before running the playbook
-  depends_on      = [aws_instance.web_server]
+  depends_on      = [null_resource.wait_for_instance]
 }
 
 # Output the public IP of the new instance
