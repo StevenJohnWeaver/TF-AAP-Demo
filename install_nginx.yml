@@ -4,6 +4,12 @@
   become: yes # Use privilege escalation (sudo) to run the tasks
 
   tasks:
+    - name: Ensure sudo and Python are installed
+      ansible.builtin.raw: sudo apt-get update && sudo apt-get install -y sudo python3
+      args:
+        creates: /usr/bin/python3
+      when: ansible_os_family == "Debian"
+
     - name: Ensure Nginx is installed
       ansible.builtin.apt:
         name: nginx
