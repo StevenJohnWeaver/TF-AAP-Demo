@@ -114,7 +114,7 @@ resource "null_resource" "wait_for_instance" {
 
   # The provisioner will run a simple shell command that waits for port 22 to be available.
   provisioner "local-exec" {
-    command = "until curl ${aws_instance.web_server.public_ip}:22; do echo 'Waiting for port 22...'; sleep 5; done"
+    command = "until `timeout 1 bash -c 'cat < /dev/null > /dev/tcp/${aws_instance.web_server.public_ip}/22'`; do echo 'Waiting for port 22...'; sleep 5; done"
   }
 }
 
