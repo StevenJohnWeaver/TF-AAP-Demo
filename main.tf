@@ -64,7 +64,7 @@ resource "aws_instance" "web_server" {
 # Security group to allow SSH and HTTP traffic
 resource "aws_security_group" "allow_http_ssh" {
   name_prefix = "allow_http_ssh_"
-  description = "Allow SSH and HTTP inbound traffic"
+  description = "Allow SSH, HTTP inbound and all outbound traffic"
 
   ingress {
     from_port   = 22
@@ -77,6 +77,14 @@ resource "aws_security_group" "allow_http_ssh" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Add this rule to allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" # -1 means all protocols (TCP, UDP, ICMP, etc.)
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
